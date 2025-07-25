@@ -14,8 +14,5 @@ Manage your Rows spreadsheets from your keyboard.
 
 ### Open Spreadsheet
 
-- **Description:** Open a spreadsheet from your Rows workspace.
-- **How it works:**
-  - Lists all spreadsheets in your workspace (or a specific folder if Folder ID is set).
-  - Allows you to search and select a spreadsheet.
-  - Opens the selected spreadsheet in your browser.
+- Open a spreadsheet from your Rows workspace.
+- Press **CMD + O** to view the spreadsheet tables.
