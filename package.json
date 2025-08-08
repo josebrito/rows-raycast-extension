@@ -13,6 +13,13 @@
       "subtitle": "Rows",
       "description": "Open a spreadsheet from your workspace",
       "mode": "view"
+    },
+    {
+      "name": "create-new-spreadsheet",
+      "title": "Create New Spreadsheet",
+      "subtitle": "Rows",
+      "description": "Create a new spreadsheet",
+      "mode": "no-view"
     }
   ],
   "preferences": [
@@ -27,7 +34,8 @@
       "name": "folderId",
       "type": "textfield",
       "title": "Folder ID (optional)",
-      "description": "Filter spreadsheets by folder ID. Leave empty to list all."
+      "description": "Filter spreadsheets by folder ID. Leave empty to list all.",
+      "required": false
     }
   ],
   "dependencies": {

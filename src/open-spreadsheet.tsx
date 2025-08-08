@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   ActionPanel,
   Action,
@@ -9,7 +10,6 @@ import {
   useNavigation,
   Keyboard,
 } from "@raycast/api";
-import React, { useEffect, useState } from "react";
 import { withCache } from "@raycast/utils";
 
 interface Spreadsheet {
@@ -189,6 +189,7 @@ export default function Command() {
           actions={
             <ActionPanel>
               <Action.OpenInBrowser url={getSpreadsheetUrl(sheet)} />
+              <Action.CopyToClipboard content={getSpreadsheetUrl(sheet)} />
               <Action
                 title="Show Spreadsheet Tables"
                 onAction={() =>
