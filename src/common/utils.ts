@@ -1,5 +1,5 @@
 import { getPreferenceValues } from "@raycast/api";
-import type { Spreadsheet, SpreadsheetInfo } from "./types";
+import type { Spreadsheet } from "./types";
 
 export const API_URL = "https://api.rows.com/v1";
 export const PREFERENCES = getPreferenceValues<{ apiToken?: string }>();
@@ -13,20 +13,20 @@ export function buildAuthHeaders(): HeadersInit {
 
 export function getSpreadsheetUrl(
   workspaceSlug: string | null,
-  folderMap: Record<string, { slug: string; name: string }>,
+  folderSlug: string | undefined,
   sheet: Spreadsheet,
 ): string {
-  if (!workspaceSlug || !sheet.folder_id || !folderMap[sheet.folder_id]) return "";
-  return `https://rows.com/${workspaceSlug}/${folderMap[sheet.folder_id].slug}/${sheet.slug}-${sheet.id}`;
+  if (!workspaceSlug || !folderSlug) return "";
+  return `https://rows.com/${workspaceSlug}/${folderSlug}/${sheet.slug}-${sheet.id}`;
 }
 
-export function getTableUrl(
+export function getSpreadsheetTableUrl(
   workspaceSlug: string | null,
   folderSlug: string | undefined,
-  spreadsheet: SpreadsheetInfo,
-  pageId: string,
-  tableSlug: string,
+  spreadsheet: Spreadsheet,
+  spreadsheetPageId: string,
+  spreadsheetTableSlug: string,
 ): string {
   if (!workspaceSlug || !folderSlug) return "";
-  return `https://rows.com/${workspaceSlug}/${folderSlug}/${spreadsheet.slug}-${spreadsheet.id}/${pageId}/edit#${tableSlug}`;
+  return `${getSpreadsheetUrl(workspaceSlug, folderSlug, spreadsheet)}/${spreadsheetPageId}/edit#${spreadsheetTableSlug}`;
 }
