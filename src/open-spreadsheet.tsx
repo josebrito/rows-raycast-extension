@@ -10,111 +10,14 @@ import {
   useNavigation,
   Keyboard,
 } from "@raycast/api";
-import { withCache } from "@raycast/utils";
-
-interface Spreadsheet {
-  id: string;
-  name: string;
-  slug: string;
-  folder_id: string;
-}
-
-interface Folder {
-  id: string;
-  slug: string;
-  name: string;
-}
-
-// Add type for spreadsheet info response
-interface SpreadsheetInfo {
-  id: string;
-  name: string;
-  slug: string;
-  created_at: string;
-  pages: Array<{
-    id: string;
-    name: string;
-    slug: string;
-    created_at: string;
-    tables: Array<{
-      id: string;
-      name: string;
-      slug: string;
-      created_at: string;
-    }>;
-  }>;
-}
+import { getSpreadsheetUrl, getTableUrl } from "./common/utils";
+import type { Spreadsheet, SpreadsheetInfo } from "./common/types";
+import { fetchWorkspaces } from "./services/fetch-workspaces";
+import { fetchFolders } from "./services/fetch-folders";
+import { fetchSpreadsheets } from "./services/fetch-spreadsheets";
+import { fetchSpreadsheetInfo } from "./services/fetch-spreadsheet-info";
 
 const PREFERENCES = getPreferenceValues<{ apiToken?: string; folderId?: string }>();
-const API_URL = "https://api.rows.com/v1";
-
-const fetchWorkspaces = withCache(
-  async (apiToken: string) => {
-    const res = await fetch(`${API_URL}/workspaces`, {
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${apiToken}`,
-      },
-    });
-    if (!res.ok) throw new Error(`Failed to fetch workspaces: ${res.status}`);
-    const data = await res.json();
-    // If the response is an array, pick the first workspace
-    if (Array.isArray(data)) return data[0];
-    return data;
-  },
-  { maxAge: 5 * 60 * 1000 },
-);
-
-const fetchFolders = withCache(
-  async (apiToken: string) => {
-    const res = await fetch(`${API_URL}/folders?offset=0&limit=100`, {
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${apiToken}`,
-      },
-    });
-    if (!res.ok) throw new Error(`Failed to fetch folders: ${res.status}`);
-    const data = await res.json();
-    // Some APIs wrap items in an array, some in an object
-    if (Array.isArray(data)) {
-      // If the response is an array, merge all items arrays
-      return data.flatMap((page) => page.items as Folder[]);
-    }
-    return data.items as Folder[];
-  },
-  { maxAge: 5 * 60 * 1000 },
-);
-
-const fetchSpreadsheets = withCache(
-  async (apiToken: string, folderId?: string) => {
-    const url = `${API_URL}/spreadsheets?${folderId ? `folder_id=${folderId}&` : ""}offset=0&limit=100`;
-    const res = await fetch(url, {
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${apiToken}`,
-      },
-    });
-    if (!res.ok) throw new Error(`Failed to fetch spreadsheets: ${res.status}`);
-    const data = await res.json();
-    return (data.items || []) as Spreadsheet[];
-  },
-  { maxAge: 2 * 60 * 1000 },
-);
-
-// Fetch spreadsheet info by ID, with cache
-const fetchSpreadsheetInfo = withCache(
-  async (apiToken: string, spreadsheetId: string): Promise<SpreadsheetInfo> => {
-    const res = await fetch(`${API_URL}/spreadsheets/${spreadsheetId}`, {
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${apiToken}`,
-      },
-    });
-    if (!res.ok) throw new Error(`Failed to fetch spreadsheet info: ${res.status}`);
-    return await res.json();
-  },
-  { maxAge: 2 * 60 * 1000 },
-);
 
 export default function Command() {
   const { push } = useNavigation();
@@ -124,6 +27,10 @@ export default function Command() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  /**
+   * FIXME: remove withCache from the fetch functions
+   * and replace this hook with a useCachedPromise hook
+   */
   useEffect(() => {
     const apiToken = PREFERENCES.apiToken || "";
     const folderId = PREFERENCES.folderId;
@@ -152,11 +59,6 @@ export default function Command() {
       }
     })();
   }, []);
-
-  function getSpreadsheetUrl(sheet: Spreadsheet): string {
-    if (!workspaceSlug || !sheet.folder_id || !folderMap[sheet.folder_id]) return "";
-    return `https://rows.com/${workspaceSlug}/${folderMap[sheet.folder_id].slug}/${sheet.slug}-${sheet.id}`;
-  }
 
   if (loading) {
     return <List isLoading />;
@@ -188,8 +90,8 @@ export default function Command() {
           icon={Icon.List}
           actions={
             <ActionPanel>
-              <Action.OpenInBrowser url={getSpreadsheetUrl(sheet)} />
-              <Action.CopyToClipboard content={getSpreadsheetUrl(sheet)} />
+              <Action.OpenInBrowser url={getSpreadsheetUrl(workspaceSlug, folderMap, sheet)} />
+              <Action.CopyToClipboard content={getSpreadsheetUrl(workspaceSlug, folderMap, sheet)} />
               <Action
                 title="Show Spreadsheet Tables"
                 onAction={() =>
@@ -265,15 +167,6 @@ export function SpreadsheetInfoScreen(props: {
     );
   }
 
-  // Helper to build table URL
-  function getTableUrl(table: { slug: string }, page: { id: string }, spreadsheet: SpreadsheetInfo) {
-    const workspaceSlug = props.workspaceSlug;
-    const folderId = props.spreadsheetFolderId;
-    const folderSlug = props.folderMap[folderId]?.slug;
-    if (!workspaceSlug || !folderSlug) return "";
-    return `https://rows.com/${workspaceSlug}/${folderSlug}/${spreadsheet.slug}-${spreadsheet.id}/${page.id}/edit#${table.slug}`;
-  }
-
   return (
     <List navigationTitle={info.name} searchBarPlaceholder="Search tables...">
       {info.pages.map((page) => (
@@ -285,8 +178,24 @@ export function SpreadsheetInfoScreen(props: {
               icon={Icon.AppWindowGrid3x3}
               actions={
                 <ActionPanel>
-                  <Action.OpenInBrowser url={getTableUrl(table, page, info)} />
-                  <Action.CopyToClipboard content={getTableUrl(table, page, info)} />
+                  <Action.OpenInBrowser
+                    url={getTableUrl(
+                      props.workspaceSlug,
+                      props.folderMap[props.spreadsheetFolderId]?.slug,
+                      info,
+                      page.id,
+                      table.slug,
+                    )}
+                  />
+                  <Action.CopyToClipboard
+                    content={getTableUrl(
+                      props.workspaceSlug,
+                      props.folderMap[props.spreadsheetFolderId]?.slug,
+                      info,
+                      page.id,
+                      table.slug,
+                    )}
+                  />
                 </ActionPanel>
               }
             />
