@@ -1,6 +1,9 @@
 import { API_URL, buildAuthHeaders } from "../../common/utils";
 import type { CreateSpreadsheetRequest, Spreadsheet } from "../../common/types";
 
+/**
+ * ENTERPRISE ONLY
+ */
 export async function createSpreadsheet(payload: CreateSpreadsheetRequest): Promise<Spreadsheet> {
   const res = await fetch(`${API_URL}/spreadsheets`, {
     method: "POST",

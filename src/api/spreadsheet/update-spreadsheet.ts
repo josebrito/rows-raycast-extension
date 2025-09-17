@@ -1,7 +1,7 @@
 import { API_URL, buildAuthHeaders } from "../../common/utils";
 import type { Spreadsheet, UpdateSpreadsheetRequest } from "../../common/types";
 
-export async function updateSpreadsheetName(
+export async function updateSpreadsheet(
   spreadsheetId: string,
   payload: UpdateSpreadsheetRequest,
 ): Promise<Spreadsheet> {
