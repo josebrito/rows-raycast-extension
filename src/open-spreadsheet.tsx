@@ -3,10 +3,10 @@ import { ActionPanel, Action, Icon, List, showToast, Toast, useNavigation, Keybo
 import { useCachedPromise } from "@raycast/utils";
 import { getSpreadsheetUrl, getSpreadsheetTableUrl } from "./common/utils";
 import type { Folder, Spreadsheet } from "./common/types";
-import { getWorkspaceInfo } from "./api/get-workspace-info";
-import { listFolders } from "./api/list-folders";
-import { listSpreadsheets } from "./api/list-spreadsheets";
-import { getSpreadsheetInfo } from "./api/get-spreadsheet-info";
+import { getWorkspaceInfo } from "./api/workspace/get-workspace-info";
+import { listFolders } from "./api/workspace/list-folders";
+import { listSpreadsheets } from "./api/workspace/list-spreadsheets";
+import { getSpreadsheetInfo } from "./api/spreadsheet/get-spreadsheet-info";
 
 export default function Command() {
   const { push } = useNavigation();

@@ -1,5 +1,5 @@
-import { API_URL, buildAuthHeaders } from "../common/utils";
-import type { Workspace } from "../common/types";
+import { API_URL, buildAuthHeaders } from "../../common/utils";
+import type { Workspace } from "../../common/types";
 
 export async function getWorkspaceInfo(): Promise<Workspace> {
   const res = await fetch(`${API_URL}/workspaces`, {

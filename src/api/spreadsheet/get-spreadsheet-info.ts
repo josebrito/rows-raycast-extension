@@ -1,5 +1,5 @@
-import { API_URL, buildAuthHeaders } from "../common/utils";
-import type { SpreadsheetInfo } from "../common/types";
+import { API_URL, buildAuthHeaders } from "../../common/utils";
+import type { SpreadsheetInfo } from "../../common/types";
 
 export async function getSpreadsheetInfo(spreadsheetId: string): Promise<SpreadsheetInfo> {
   const res = await fetch(`${API_URL}/spreadsheets/${spreadsheetId}`, {

@@ -1,5 +1,5 @@
-import { API_URL, buildAuthHeaders } from "../common/utils";
-import type { Folder } from "../common/types";
+import { API_URL, buildAuthHeaders } from "../../common/utils";
+import type { Folder } from "../../common/types";
 
 export async function listFolders(): Promise<Folder[]> {
   const res = await fetch(`${API_URL}/folders?offset=0&limit=100`, {

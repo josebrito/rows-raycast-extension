@@ -1,5 +1,5 @@
-import { API_URL, buildAuthHeaders } from "../common/utils";
-import type { Spreadsheet } from "../common/types";
+import { API_URL, buildAuthHeaders } from "../../common/utils";
+import type { Spreadsheet } from "../../common/types";
 
 export async function listSpreadsheets(folderId?: string): Promise<Spreadsheet[]> {
   const url = `${API_URL}/spreadsheets?${folderId ? `folder_id=${folderId}&` : ""}offset=0&limit=100`;

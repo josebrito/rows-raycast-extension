@@ -39,3 +39,20 @@ export interface Table {
   slug: string;
   created_at: string;
 }
+
+// Requests
+export interface CreateSpreadsheetRequest {
+  name: string;
+}
+
+export interface UpdateSpreadsheetRequest {
+  name?: string;
+}
+
+export interface CreatePageRequest {
+  name: string;
+}
+
+export interface UpdatePageRequest {
+  name?: string;
+}
