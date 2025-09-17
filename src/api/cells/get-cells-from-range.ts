@@ -7,8 +7,8 @@ export async function getCellsFromRange(
   range: string,
   options?: CellGetterQueryParameters,
 ): Promise<GetCellsResponse> {
-  const base = `${API_URL}/spreadsheets/${spreadsheetId}/tables/${tableId}/cells`;
-  const params = new URLSearchParams({ range });
+  const base = `${API_URL}/spreadsheets/${spreadsheetId}/tables/${tableId}/cells/${range}`;
+  const params = new URLSearchParams();
 
   if (options?.value_render_option) {
     params.set("value_render_option", options.value_render_option);

@@ -1,0 +1,95 @@
+---
+description: Guidelines for implementing Raycast AI tools and evals in this extension
+alwaysApply: false
+---
+
+## Raycast AI Tools – Guidelines
+
+Use these conventions when adding or updating Raycast AI tools and evals in this repository.
+
+### Where things live
+
+- **Tools directory**: put AI tools in `src/tools`. Example tool: [src/tools/get-workspace-info.ts](mdc:src/tools/get-workspace-info.ts)
+- **API layer**: call external services via `src/api/**`, not directly from tools. Example API used by the tool: [src/api/workspace/get-workspace-info.ts](mdc:src/api/workspace/get-workspace-info.ts)
+- **Shared types**: define and import types from [src/common/types.ts](mdc:src/common/types.ts)
+- **Auth & config**: use helpers from [src/common/utils.ts](mdc:src/common/utils.ts) inside the API layer, not inside tools
+
+### Tool shape
+
+- Default export must be the tool function: `export default async function tool(input: Input): Promise<Result>`
+- Tools must accept a single object parameter (can be empty for no input)
+- Tools should be thin wrappers over the API layer; keep HTTP and auth details in `src/api/**`
+- Return plain, serializable data (no classes, promises, or functions)
+
+### JSDoc requirements
+
+- Add descriptive JSDoc to the tool function and to each input field; this improves Raycast AI tool selection and argument construction
+- Specify when inputs are optional and what is returned
+- Example: see [src/tools/get-workspace-info.ts](mdc:src/tools/get-workspace-info.ts)
+
+### Confirmations (optional)
+
+- For destructive or potentially surprising actions, export a `confirmation` alongside the default tool
+- Signature: `export const confirmation: Tool.Confirmation<Input> = async (input) => ({ message: "..." });`
+- Keep the tool idempotent if the user cancels
+
+### Inputs
+
+- Define a single `Input` type per tool; prefer exact strings, enums, or unions over `any`
+- Validate minimally at the tool boundary and return a clear error if invalid
+
+### Errors
+
+- Let API errors propagate as `Error` with meaningful messages (tools should not swallow errors)
+- Prefer messages that include context, e.g., resource id or operation
+
+### Evals and instructions
+
+- Prefer keeping AI instructions/evals outside of `package.json` in a root `ai.json` or `ai.yaml`
+- Minimal structure: `{ "instructions": "...", "evals": [ { "input": "@extension prompt", "expected": [ { "callsTool": "tool-name" } ] } ] }`
+- Keep evals realistic and include mocked tool responses for determinism
+
+### Best practices
+
+- Strongly type tool inputs and outputs (`Workspace`, etc.)
+- Keep tools small and single‑purpose; compose via higher‑level commands if needed
+- Confirm destructive actions; avoid side effects unless clearly intended
+- Reuse `src/api/**` to centralize networking, retries, and auth
+
+### Template
+
+```ts
+// src/tools/example-tool.ts
+import type { Something } from "../common/types";
+import { doSomething as apiDoSomething } from "../api/something/do-something";
+
+type Input = {
+  /** Short, action‑oriented description of this argument */
+  name: string;
+  /** Optional details that change behavior */
+  note?: string;
+};
+
+/**
+ * One‑line summary describing what the tool does.
+ *
+ * Additional context to help Raycast AI choose and call this tool correctly.
+ *
+ * @param input Structured arguments for the tool.
+ * @returns Serializable result that callers can render or pipe into follow‑up steps.
+ */
+export default async function tool(input: Input): Promise<Something> {
+  return await apiDoSomething(input);
+}
+
+// Optional confirmation for destructive/surprising actions
+// export const confirmation: Tool.Confirmation<Input> = async (input) => ({
+//   message: `Proceed with action for ${input.name}?`,
+// });
+```
+
+### References
+
+- Core concepts: https://developers.raycast.com/ai/learn-core-concepts-of-ai-extensions
+- Writing evals: https://developers.raycast.com/ai/write-evals-for-your-ai-extension
+- Best practices: https://developers.raycast.com/ai/follow-best-practices-for-ai-extensions

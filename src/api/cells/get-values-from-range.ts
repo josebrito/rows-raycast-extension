@@ -7,8 +7,8 @@ export async function getValuesFromRange(
   range: string,
   options?: CellGetterQueryParameters,
 ): Promise<GetValuesResponse> {
-  const base = `${API_URL}/spreadsheets/${spreadsheetId}/tables/${tableId}/values`;
-  const params = new URLSearchParams({ range });
+  const base = `${API_URL}/spreadsheets/${spreadsheetId}/tables/${tableId}/values/${range}`;
+  const params = new URLSearchParams();
 
   if (options?.value_render_option) {
     params.set("value_render_option", options.value_render_option);
@@ -28,7 +28,10 @@ export async function getValuesFromRange(
 
   const url = `${base}?${params.toString()}`;
 
+  console.log("## getValuesFromRange url", url);
+
   const res = await fetch(url, { headers: buildAuthHeaders() });
+
   if (!res.ok) throw new Error(`Failed to get values: ${res.status}`);
   return (await res.json()) as GetValuesResponse;
 }

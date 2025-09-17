@@ -22,6 +22,43 @@
       "mode": "no-view"
     }
   ],
+  "tools": [
+    {
+      "name": "get-workspace-info",
+      "title": "Get Workspace Info",
+      "description": "Get details of the Rows workspace"
+    },
+    {
+      "name": "list-spreadsheets",
+      "title": "List Spreadsheets",
+      "description": "List spreadsheets in the workspace, optionally by folder"
+    },
+    {
+      "name": "get-spreadsheet",
+      "title": "Get Spreadsheet",
+      "description": "Get pages and table names for a spreadsheet"
+    },
+    {
+      "name": "list-folders",
+      "title": "List Folders",
+      "description": "List folders in the workspace"
+    },
+    {
+      "name": "create-spreadsheet",
+      "title": "Create Spreadsheet",
+      "description": "Create a new spreadsheet (Enterprise)"
+    },
+    {
+      "name": "get-table-contents",
+      "title": "Get Table Contents",
+      "description": "Get values from a table range"
+    },
+    {
+      "name": "append-values-to-table",
+      "title": "Append Values to Table",
+      "description": "Append rows of values into a table range"
+    }
+  ],
   "preferences": [
     {
       "name": "apiToken",
