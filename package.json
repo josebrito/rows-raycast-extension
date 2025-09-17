@@ -29,13 +29,6 @@
       "title": "Rows API Token",
       "description": "Your Rows API token. Get it from https://rows.com/developers/api-keys",
       "required": true
-    },
-    {
-      "name": "folderId",
-      "type": "textfield",
-      "title": "Folder ID (optional)",
-      "description": "Filter spreadsheets by folder ID. Leave empty to list all.",
-      "required": false
     }
   ],
   "dependencies": {

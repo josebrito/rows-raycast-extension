@@ -1,11 +1,13 @@
+import { getPreferenceValues } from "@raycast/api";
 import type { Spreadsheet, SpreadsheetInfo } from "./types";
 
 export const API_URL = "https://api.rows.com/v1";
+export const PREFERENCES = getPreferenceValues<{ apiToken?: string }>();
 
-export function buildAuthHeaders(apiToken: string): HeadersInit {
+export function buildAuthHeaders(): HeadersInit {
   return {
     Accept: "application/json",
-    Authorization: `Bearer ${apiToken}`,
+    Authorization: `Bearer ${PREFERENCES.apiToken || ""}`,
   };
 }
 

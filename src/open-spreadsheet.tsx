@@ -1,23 +1,11 @@
 import React, { useEffect, useState } from "react";
-import {
-  ActionPanel,
-  Action,
-  Icon,
-  List,
-  getPreferenceValues,
-  showToast,
-  Toast,
-  useNavigation,
-  Keyboard,
-} from "@raycast/api";
+import { ActionPanel, Action, Icon, List, showToast, Toast, useNavigation, Keyboard } from "@raycast/api";
 import { getSpreadsheetUrl, getTableUrl } from "./common/utils";
 import type { Spreadsheet, SpreadsheetInfo } from "./common/types";
 import { fetchWorkspaces } from "./services/fetch-workspaces";
 import { fetchFolders } from "./services/fetch-folders";
 import { fetchSpreadsheets } from "./services/fetch-spreadsheets";
 import { fetchSpreadsheetInfo } from "./services/fetch-spreadsheet-info";
-
-const PREFERENCES = getPreferenceValues<{ apiToken?: string; folderId?: string }>();
 
 export default function Command() {
   const { push } = useNavigation();
@@ -32,24 +20,23 @@ export default function Command() {
    * and replace this hook with a useCachedPromise hook
    */
   useEffect(() => {
-    const apiToken = PREFERENCES.apiToken || "";
-    const folderId = PREFERENCES.folderId;
     setLoading(true);
     setError(null);
     (async () => {
       try {
         // Fetch workspace slug
-        const workspace = await fetchWorkspaces(apiToken);
-        setWorkspaceSlug(workspace.slug);
+        const workspace = await fetchWorkspaces();
         // Fetch folders and build id->slug map
-        const folders = await fetchFolders(apiToken);
+        const folders = await fetchFolders();
         const folderMap: Record<string, { slug: string; name: string }> = {};
         for (const folder of folders) {
           folderMap[folder.id] = { slug: folder.slug, name: folder.name };
         }
-        setFolderMap(folderMap);
         // Fetch spreadsheets
-        const sheets = await fetchSpreadsheets(apiToken, folderId);
+        const sheets = await fetchSpreadsheets();
+
+        setWorkspaceSlug(workspace.slug);
+        setFolderMap(folderMap);
         setSpreadsheets(sheets);
       } catch (err) {
         setError(err instanceof Error ? err.message : String(err));
@@ -125,7 +112,6 @@ export function SpreadsheetInfoScreen(props: {
   workspaceSlug: string | null;
   folderMap: Record<string, { slug: string; name: string }>;
 }) {
-  const apiToken = PREFERENCES.apiToken || "";
   const [info, setInfo] = useState<SpreadsheetInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -134,7 +120,7 @@ export function SpreadsheetInfoScreen(props: {
     let cancelled = false;
     setLoading(true);
     setError(null);
-    fetchSpreadsheetInfo(apiToken, props.spreadsheetId)
+    fetchSpreadsheetInfo(props.spreadsheetId)
       .then((data) => {
         if (!cancelled) setInfo(data);
       })
@@ -147,7 +133,7 @@ export function SpreadsheetInfoScreen(props: {
     return () => {
       cancelled = true;
     };
-  }, [apiToken, props.spreadsheetId]);
+  }, [props.spreadsheetId]);
 
   if (loading) {
     return <List isLoading navigationTitle={props.spreadsheetName} />;

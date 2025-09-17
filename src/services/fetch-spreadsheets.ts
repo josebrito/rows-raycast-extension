@@ -3,10 +3,10 @@ import { API_URL, buildAuthHeaders } from "../common/utils";
 import type { Spreadsheet } from "../common/types";
 
 export const fetchSpreadsheets = withCache(
-  async (apiToken: string, folderId?: string): Promise<Spreadsheet[]> => {
+  async (folderId?: string): Promise<Spreadsheet[]> => {
     const url = `${API_URL}/spreadsheets?${folderId ? `folder_id=${folderId}&` : ""}offset=0&limit=100`;
     const res = await fetch(url, {
-      headers: buildAuthHeaders(apiToken),
+      headers: buildAuthHeaders(),
     });
     if (!res.ok) throw new Error(`Failed to fetch spreadsheets: ${res.status}`);
     const data = await res.json();
