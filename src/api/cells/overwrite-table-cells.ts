@@ -7,7 +7,7 @@ export async function overwriteTableCells(
   range: string,
   payload: OverwriteRangeRequest,
 ): Promise<CellWriterResponse> {
-  const url = `${API_URL}/spreadsheets/${spreadsheetId}/tables/${tableId}/values?range=${encodeURIComponent(range)}`;
+  const url = `${API_URL}/spreadsheets/${spreadsheetId}/tables/${tableId}/cells/${range}`;
   const res = await fetch(url, {
     method: "PUT",
     headers: {

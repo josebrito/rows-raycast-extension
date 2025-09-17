@@ -8,7 +8,6 @@ export async function appendValuesToTable(
   payload: AppendValuesRequest,
 ): Promise<CellWriterResponse> {
   const url = `${API_URL}/spreadsheets/${spreadsheetId}/tables/${tableId}/values/${range}:append`;
-
   const res = await fetch(url, {
     method: "POST",
     headers: {
