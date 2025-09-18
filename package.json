@@ -20,6 +20,13 @@
       "subtitle": "Rows",
       "description": "Create a new spreadsheet",
       "mode": "no-view"
+    },
+    {
+      "name": "import-selected-csv-file",
+      "title": "Import Selected CSV File",
+      "subtitle": "Rows",
+      "description": "Import a selected CSV file into a spreadsheet",
+      "mode": "view"
     }
   ],
   "tools": [
@@ -78,7 +85,8 @@
   ],
   "dependencies": {
     "@raycast/api": "^1.101.1",
-    "@raycast/utils": "^1.17.0"
+    "@raycast/utils": "^1.17.0",
+    "csv-parse": "^5.5.6"
   },
   "devDependencies": {
     "@raycast/eslint-config": "^2.0.4",

@@ -19,6 +19,10 @@ Manage your Rows spreadsheets from your keyboard.
 
 - Opens `https://rows.new` to create a new spreadsheet.
 
+### Import Select CSV File
+
+- Imports the selected CSV file in Finder to a spreadsheet.
+
 ## Available AI Tools
 
 ### Get Workspace Info
