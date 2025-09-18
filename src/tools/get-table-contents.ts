@@ -29,10 +29,8 @@ type Input = {
 /**
  * Get table contents (cell values) for a given spreadsheet table and range.
  *
- * Returns `GetValuesResponse` with `items` and `next_page_token`.
- *
  * @param input Object with identifiers and optional render/pagination options.
- * @returns The values response for the specified range.
+ * @returns Returns `GetValuesResponse` with a list of `items` and a `next_page_token`.
  */
 export default async function tool(input: Input): Promise<GetValuesResponse> {
   if (!input || !input.spreadsheetId) throw new Error("spreadsheetId is required");

@@ -85,7 +85,7 @@ export interface CellGetterQueryParameters {
   page_token?: string;
 }
 
-export interface CellWriterResponse {
+export interface BadResponse {
   code: number;
   message: string;
 }

@@ -7,14 +7,10 @@ type Input = {
 };
 
 /**
- * Get a spreadsheet's structure for a given spreadsheet ID.
- *
- * Returns `SpreadsheetInfo` including contained pages and tables information (ID, name, slug).
- *
- * Does not return the contents of the tables, for that use tool `get-table-contents`.
+ * Get a spreadsheet's structure for a given spreadsheet ID, the contained pages and tables.
  *
  * @param input Object containing the required `spreadsheetId`.
- * @returns The `SpreadsheetInfo` for the given spreadsheet.
+ * @returns The spreadsheet structure for the given spreadsheet, includes pages and tables information (ID, name, slug).
  */
 export default async function tool(input: Input): Promise<SpreadsheetInfo> {
   if (!input || !input.spreadsheetId) {

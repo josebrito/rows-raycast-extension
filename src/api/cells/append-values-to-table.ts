@@ -1,12 +1,12 @@
 import { API_URL, buildAuthHeaders } from "../../common/utils";
-import type { AppendValuesRequest, CellWriterResponse } from "../../common/types";
+import type { AppendValuesRequest, BadResponse } from "../../common/types";
 
 export async function appendValuesToTable(
   spreadsheetId: string,
   tableId: string,
   range: string,
   payload: AppendValuesRequest,
-): Promise<CellWriterResponse> {
+): Promise<boolean> {
   const url = `${API_URL}/spreadsheets/${spreadsheetId}/tables/${tableId}/values/${range}:append`;
   const res = await fetch(url, {
     method: "POST",
@@ -16,6 +16,11 @@ export async function appendValuesToTable(
     },
     body: JSON.stringify(payload),
   });
-  if (!res.ok) throw new Error(`Failed to append values: ${res.status}`);
-  return (await res.json()) as CellWriterResponse;
+
+  if (!res.ok) {
+    throw new Error(
+      `Failed to append values: ${res.status} - ${((await res.json()) as BadResponse)?.message || "Unknown error"}`,
+    );
+  }
+  return res.status === 202;
 }

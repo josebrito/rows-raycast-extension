@@ -57,8 +57,16 @@
       "name": "append-values-to-table",
       "title": "Append Values to Table",
       "description": "Append rows of values into a table range"
+    },
+    {
+      "name": "modify-cells-in-table",
+      "title": "Modify Cells in Table",
+      "description": "Write values and formulas to cells in a table range"
     }
   ],
+  "ai": {
+    "instructions": "When asked to open or modify a spreadsheet, first get the spreadsheet structure, then get the table contents. If multiple match, ask the user to choose. Confirm before updating or deleting data."
+  },
   "preferences": [
     {
       "name": "apiToken",

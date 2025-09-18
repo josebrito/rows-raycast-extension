@@ -28,8 +28,6 @@ export async function getValuesFromRange(
 
   const url = `${base}?${params.toString()}`;
 
-  console.log("## getValuesFromRange url", url);
-
   const res = await fetch(url, { headers: buildAuthHeaders() });
 
   if (!res.ok) throw new Error(`Failed to get values: ${res.status}`);

@@ -43,7 +43,11 @@ Manage your Rows spreadsheets from your keyboard.
 
 ### Append Values to Table
 
-- Append rows of values to a table range in a spreadsheet table.
+- Append rows of values to a table range for a given spreadsheet.
+
+### Modify Cells in Table
+
+- Modify rows of values and formulas in a table range for a given spreadsheet.
 
 ### Create Spreadsheet
 
