@@ -69,6 +69,16 @@
       "name": "modify-cells-in-table",
       "title": "Modify Cells in Table",
       "description": "Write values and formulas to cells in a table range"
+    },
+    {
+      "name": "create-spreadsheet-table",
+      "title": "Create Spreadsheet Table",
+      "description": "Create a new table in a spreadsheet page"
+    },
+    {
+      "name": "create-spreadsheet-page",
+      "title": "Create Spreadsheet Page",
+      "description": "Create a new page in a spreadsheet"
     }
   ],
   "ai": {

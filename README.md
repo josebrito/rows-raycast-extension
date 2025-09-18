@@ -53,6 +53,14 @@ Manage your Rows spreadsheets from your keyboard.
 
 - Modify rows of values and formulas in a table range for a given spreadsheet.
 
+### Create Spreadsheet Table
+
+- Create a new table in a spreadsheet.
+
+### Create Spreadsheet Page
+
+- Create a new page in a spreadsheet.
+
 ### Create Spreadsheet
 
 - Create a new spreadsheet in the workspace (Enterprise-only).
